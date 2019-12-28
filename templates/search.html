@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Search</h1>
+</div>
+
+
+<!-- Content Row -->
+<div class="row">
+    <form action="" method="post" novalidate class="col-12">
+        {{ form.hidden_tag() }}
+
+
+        <div class="input-group mb-3 col-12  col-lg-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">  {{ form.city.label.text }}<br></span>
+
+            </div>
+            {{ form.city(size=32,class="form-control",**{'placeholder':  form.city.label.text , 'aria-label' :  form.city.label.text  })    }}
+            {% for error in form.city.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+
+        <div class="input-group mb-3 col-12  col-lg-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">  {{ form.startDate.label.text }}<br></span>
+
+            </div>
+            {{ form.startDate(size=32,class="form-control date datetimepicker-input",**{'id':  'start-date', 'data-toggle':'datetimepicker' , 'data-target' :  '#start-date'  })    }}
+            {% for error in form.endDate.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div class="input-group mb-3 col-12  col-lg-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">  {{ form.endDate.label.text }}<br></span>
+
+            </div>
+            {{ form.endDate(size=32,class="form-control date datetimepicker-input",**{'id':  'end-date', 'data-toggle':'datetimepicker' , 'data-target' :  '#end-date'  })    }}
+            {% for error in form.endDate.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+
+
+        <div class="input-group mb-3 col-12  col-lg-6">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#end-date,#start-date').datetimepicker({
+            format: 'MM/DD/YYYY'
+        });
+    });
+</script>
+{% endblock %}

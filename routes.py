@@ -5,7 +5,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 from models import Paper, Submission
-from forms import LoginForm, RegistrationForm, ConferenceForm, SectionForm
+from forms import LoginForm, RegistrationForm, ConferenceForm, SectionForm, SearchForm
 from models import User, Conference, Section, SectionUser, UserPaperQualifier, ConferenceUser, Paper
 from extensions import db
 from utils import requires_roles
@@ -115,6 +115,22 @@ def conference():
         return redirect(url_for('home'))
 
     return render_template('conference.html', title='Create Conference', form=form)
+
+
+@app.route('/search', methods=['GET', 'POST'])
+@login_required
+def search():
+    form = SearchForm()
+
+    if form.validate_on_submit():
+        city = form.city.data
+        startDate = form.startDate.data
+        endDate = form.endDate.data
+        # redirect here instead to the page containing all the parkings that match the search criteria
+        # same as for @app.route('/proposals')
+        return redirect(url_for('home'))
+
+    return render_template('search.html', title='Search', form=form)
 
 
 @app.route('/section', methods=['GET', 'POST'])
