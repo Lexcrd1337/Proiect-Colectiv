@@ -1,0 +1,36 @@
+{% extends "base_login.html" %}
+
+{% block content %}
+    <div class="text-center">
+        <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+    </div>
+    <form action="" method="post" novalidate class="user">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.username(class_="form-control form-control-user",placeholder="Username") }}
+            {% for error in form.username.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+
+        </div>
+        <div class="form-group">
+            {{ form.password(class_="form-control form-control-user",placeholder="Password") }}
+            {% for error in form.password.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <div class="custom-control custom-checkbox small">
+                <input type="checkbox" class="custom-control-input" id="customCheck">
+                {{ form.remember_me(class_="custom-control-input",id_="customCheck") }}
+                {{ form.remember_me.label(class_="custom-control-label") }}
+            </div>
+        </div>
+        <div class="form-group">{{ form.submit(class_="btn btn-primary btn-user btn-block") }}</div>
+        <hr>
+        <div class="text-center">
+            <a class="small" href="{{ url_for('register') }}">Create an Account!</a>
+        </div>
+
+    </form>
+{% endblock %}

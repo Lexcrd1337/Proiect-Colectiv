@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover" style="background: #fff;">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Abstract</th>
+                <th>Full Paper</th>
+                <th>Evaluation</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in value %}
+                <tr>
+                    <td>{{ row[1] }}</td>
+                    <td><a href="/proposals/{{ row[2] }}">{{ row[2] }}</a></td>
+                    <td><a href="/proposals/{{ row[3] }}">{{ row[3] }}</a></td>
+                    <td>
+                        <div class="row">
+                            <div class="col-8">
+                                <select id="{{ row[0] }}" class="form-control">
+                                    <option value="" disabled selected>Select your qualifier</option>
+                                    <option value="strong accept">Strong Accept</option>
+                                    <option value="accept">Accept</option>
+                                    <option value="weak accept">Weak Accept</option>
+                                    <option value="borderline paper">Borderline Paper</option>
+                                    <option value="weak reject">Weak Reject</option>
+                                    <option value="reject">Reject</option>
+                                    <option value="strong reject">Strong Reject</option>
+                                </select>
+                            </div>
+                            <div class="col-3">
+                                <button class="btn btn-primary " name="{{ row[0] }}"
+                                        onclick="evaluate_proposal(this);">
+                                    Evaluate
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function evaluate_proposal(element) {
+            var paper_id = element.getAttribute('name');
+            var qualifier = $('select#' + paper_id.toString()).val();
+            $.ajax({
+                type: 'POST',
+                url: "{{ url_for('proposal_evaluate') }}",
+                data: {'paper_id': paper_id, 'qualifier': qualifier},
+                success: function (result) {
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    var response = $.parseJSON(XMLHttpRequest.responseText);
+                    var errMessage = response["message"];
+                    alert(errMessage);
+                }
+            });
+        }
+    </script>
+{% endblock %}

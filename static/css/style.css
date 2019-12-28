@@ -1,0 +1,48 @@
+* {
+    font-family: 'PT Sans', sans-serif;
+}
+
+.clear {
+    clear: both;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* END OF GENERAL STYLES*/
+
+
+
+
+.error-message {
+    background: #e74c3c;
+    color: #fff;
+    padding: 0 20px;
+}
+
+.error-message ul li {
+    background: none !important;
+    border: none !important;
+}
+
+.error {
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: #e74c3c;
+    display: block;
+    margin-left: 10px;
+}
+
+.custom-file-label::after:hover {
+    background: #ccc;
+}
+
+table.table a {
+
+    color: #007bff !important;
+
+}
+table{
+    background: #fff;
+}

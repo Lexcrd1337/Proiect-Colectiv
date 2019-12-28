@@ -1,0 +1,22 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pep8 = "*"
+autopep8 = "*"
+
+[packages]
+flask = "*"
+psycopg2 = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
+flask-script = "*"
+psycopg2-binary = "*"
+flask-wtf = "*"
+wtforms = "*"
+flask-login = "*"
+
+[requires]
+python_version = "3.7"

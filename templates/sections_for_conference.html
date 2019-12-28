@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">{{ conference }}'s Sections</h1>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover" style="background: #fff;">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Speaker</th>
+            <th>Session Chair</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Abstract</th>
+            <th>Full Paper</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in value %}
+            <tr>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+                <td>{{ row[4] }}</td>
+                <td>
+                    <a href="{{ url_for('proposal_file', filename=row[5]) }}">
+                        {{ row[5] }}
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ url_for('proposal_file', filename=row[6]) }}">
+                        {{ row[6] }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

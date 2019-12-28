@@ -1,0 +1,50 @@
+{% extends "base_login.html" %}
+
+{% block content %}
+    <div class="text-center">
+        <h1 class="h4 text-gray-900 mb-4">Register</h1>
+    </div>
+    <form action="" method="post" class="user">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {% for error in form.username.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+            {{ form.username(class_="form-control form-control-user",placeholder="Username") }}
+
+        </div>
+        <div class="form-group">
+            {% for error in form.email.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+            {{ form.email(class_="form-control form-control-user",placeholder="Email") }}
+
+        </div>
+        <div class="form-group">
+            {% for error in form.name.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+            {{ form.name(class_="form-control form-control-user",placeholder="Name") }}
+
+        </div>
+        <div class="form-group">
+            {% for error in form.password.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+            {{ form.password(class_="form-control form-control-user",placeholder="Password") }}
+
+        </div>
+        <div class="form-group">
+            {% for error in form.password2.errors %}
+                <span class="error">[{{ error }}]</span>
+            {% endfor %}
+            {{ form.password2(class_="form-control form-control-user",placeholder="Reenter Password") }}
+
+        </div>
+        <div class="form-group">{{ form.submit(class_="btn btn-primary btn-user btn-block") }}</div>
+
+        <div class="text-center">
+            <span class="small">Already registered?</span> <a class="small" href="{{ url_for('login') }}">Login!</a>
+        </div>
+    </form>
+{% endblock %}

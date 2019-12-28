@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Submit a proposal</h1>
+    </div>
+
+
+    <!-- Content Row -->
+    <div class="row">
+        <form method=post enctype=multipart/form-data class="col-12">
+            <div class="input-group mb-3 col-12  col-lg-6">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> Title</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Title" aria-label="Title"
+                       name="title">
+            </div>
+            <div class="input-group col-12  col-lg-6">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Abstract</span>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="abstract" required>
+                    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                </div>
+            </div>
+            <div class="input-group col-12  col-lg-6" style="margin-top:15px;">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Full Paper</span>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="full_paper" required>
+                    <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                </div>
+            </div>
+            <div class="col-12  col-lg-6" style="margin-top:15px">
+                <input type=submit class="btn btn-primary" value=Submit>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
