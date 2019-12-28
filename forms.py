@@ -37,6 +37,12 @@ class ConferenceForm(FlaskForm):
     endDate = StringField('End Date', validators=[DataRequired()])
     submit = SubmitField('Create')
 
+class SearchForm(FlaskForm):
+    city = StringField('City', validators=[DataRequired()])
+    startDate = StringField('Start Date', validators=[DataRequired()])
+    endDate = StringField('End Date', validators=[DataRequired()])
+    submit = SubmitField('Search')
+
 class SectionForm(FlaskForm):
     name = StringField('Section Name', validators=[DataRequired()])
     startDate = StringField('Section Start Date', validators=[DataRequired()])
