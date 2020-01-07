@@ -74,54 +74,16 @@
 
         <!-- Nav Item - Dashboard -->
 
-
-        <li class="nav-item">
-            <a class="nav-link" href=" {{ url_for('home') }}">
-                <i class="fas fa-bars"></i>
-                <span>Dashboard</span></a>
-        </li>
         <li class="nav-item">
             <a class="nav-link" href=" {{ url_for('search') }}">
                 <i class="fas fa-bars"></i>
                 <span>Search</span></a>
         </li>
-{#        <li class="nav-item">#}
-{#            <a class="nav-link" href=" {{ url_for('conferences') }}">#}
-{#                <i class="fas fa-file-alt"></i>#}
-{#                <span>View Conferences</span></a>#}
-{#        </li>#}
-{#        {% if current_user.has_role('admin', 'author') %}#}
-{#            <li class="nav-item">#}
-{#                <a class="nav-link" href=" {{ url_for('submit_proposal') }}">#}
-{#                    <i class="fas fa-file-alt"></i>#}
-{#                    <span>Submit Proposals</span></a>#}
-{#            </li>#}
-{#        {% endif %}#}
-{#        {% if current_user.has_role('admin') %}#}
-{#            <li class="nav-item">#}
-{#                <a class="nav-link" href="{{ url_for('conference') }}">#}
-{#                    <i class="fas fa-file-alt"></i>#}
-{#                    <span>Create Conference</span></a>#}
-{#            </li>#}
-{#        {% endif %}#}
-{#        {% if current_user.has_role('admin') %}#}
-{#            <li class="nav-item">#}
-{#                <a class="nav-link" href="{{ url_for('section') }}">#}
-{#                    <i class="fas fa-file-alt"></i>#}
-{#                    <span>Create Section</span></a>#}
-{#            </li>#}
-{#        {% endif %}#}
-{#        {% if current_user.has_role('admin', 'reviewer') %}#}
-{#            <li class="nav-item">#}
-{#                <a class="nav-link" href="{{ url_for('proposal_page') }}">#}
-{#                    <i class="fas fa-file-alt"></i>#}
-{#                    <span>Proposals</span></a>#}
-{#            </li>#}
-{#        {% endif %}#}
-        <!-- Sidebar Toggler (Sidebar) -->
-{#        <div class="text-center d-none d-md-inline">#}
-{#            <button class="rounded-circle border-0" id="sidebarToggle"></button>#}
-{#        </div>#}
+        <li class="nav-item">
+            <a class="nav-link" href=" {{ url_for('manage_spots') }}">
+                <i class="fas fa-bars"></i>
+                <span>Manage spots</span></a>
+        </li>
 
     </ul>
     <!-- End of Sidebar -->

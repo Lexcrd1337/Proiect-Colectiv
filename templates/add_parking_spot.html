@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Add Parking Spot</h1>
+</div>
+
+
+<!-- Content Row -->
+<div class="row">
+    <form action="" method="post" novalidate class="col-12">
+        {{ form.hidden_tag() }}
+
+        <div class="input-group mb-3 col-12  col-lg-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">  {{ form.name.label.text }}<br></span>
+
+            </div>
+            {{ form.name(size=32,class="form-control",**{'placeholder':  form.name.label.text , 'aria-label' :  form.name.label.text  })    }}
+            {% for error in form.name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+
+        <div class="input-group mb-3 col-12  col-lg-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">  {{ form.city.label.text }}<br></span>
+
+            </div>
+            {{ form.city(size=32,class="form-control",**{'placeholder':  form.city.label.text , 'aria-label' :  form.city.label.text  })    }}
+            {% for error in form.city.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+
+        <div class="input-group mb-3 col-12  col-lg-6">
+            <div class="input-group-prepend">
+                <span class="input-group-text">  {{ form.address.label.text }}<br></span>
+
+            </div>
+            {{ form.address(size=32,class="form-control",**{'placeholder':  form.address.label.text , 'aria-label' :  form.address.label.text  })    }}
+            {% for error in form.city.address %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+
+        <div class="input-group mb-3 col-12  col-lg-6">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

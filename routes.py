@@ -5,8 +5,8 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 from models import Paper, Submission
-from forms import LoginForm, RegistrationForm, ConferenceForm, SectionForm, SearchForm
-from models import User, Conference, Section, SectionUser, UserPaperQualifier, ConferenceUser, Paper
+from forms import LoginForm, RegistrationForm, ConferenceForm, SectionForm, SearchForm, AddParkingSpotForm
+from models import User, Conference, Section, SectionUser, UserPaperQualifier, ConferenceUser, Paper, ParkingSpot
 from extensions import db
 from utils import requires_roles
 from app import app
@@ -16,6 +16,7 @@ from app import app
 @app.route('/home')
 @login_required
 def home():
+    # todo maybe replace home.html with parking spot page
     return render_template('home.html', title='Home Page')
 
 
@@ -115,23 +116,6 @@ def conference():
         return redirect(url_for('home'))
 
     return render_template('conference.html', title='Create Conference', form=form)
-
-
-@app.route('/search', methods=['GET', 'POST'])
-@login_required
-def search():
-    form = SearchForm()
-
-    if form.validate_on_submit():
-        city = form.city.data
-        startDate = form.startDate.data
-        endDate = form.endDate.data
-        # redirect here instead to the page containing all the parkings that match the search criteria
-        # same as for @app.route('/proposals')
-        return redirect(url_for('home'))
-
-    return render_template('search.html', title='Search', form=form)
-
 
 @app.route('/section', methods=['GET', 'POST'])
 @login_required
@@ -261,3 +245,45 @@ def sectionsForConference(conferenceId):
                      paper.abstract_name, paper.full_paper_name))
 
     return render_template('sections_for_conference.html', value=data, conference=conferenceName)
+
+@app.route('/search', methods=['GET', 'POST'])
+@login_required
+def search():
+    form = SearchForm()
+
+    if form.validate_on_submit():
+        city = form.city.data
+        startDate = form.startDate.data
+        endDate = form.endDate.data
+        # todo implement parking_spots.html
+        return redirect(url_for('parking_spots.html', city=city, startDate=startDate, endDate=endDate))
+
+    return render_template('search.html', title='Search', form=form)
+
+
+@app.route('/manage-spots', methods=['GET', 'POST'])
+@login_required
+def manage_spots():
+    cursor = db.engine.raw_connection().cursor()
+    cursor.execute('select * from parking_spots')
+    userSpots = ParkingSpot.query.filter_by(idUser=current_user.id).all()
+    data = userSpots
+
+    return render_template('manage_spots.html', title='Manage spots', value=data)
+
+
+@app.route('/add-parking-spot', methods=['GET', 'POST'])
+@login_required
+def add_parking_spot():
+    form = AddParkingSpotForm()
+
+    if form.validate_on_submit():
+        parkingSpot = ParkingSpot(name=form.name.data, city=form.city.data, address=form.address.data,
+                                  idUser=current_user.id)
+        db.session.add(parkingSpot)
+        db.session.commit()
+
+        flash('The new Parking Spot has been added')
+        return redirect(url_for('manage_spots'))
+
+    return render_template('add_parking_spot.html', title='Add Parking Spot', form=form)

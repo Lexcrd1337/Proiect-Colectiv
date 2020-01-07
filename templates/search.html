@@ -30,10 +30,11 @@
 
             </div>
             {{ form.startDate(size=32,class="form-control date datetimepicker-input",**{'id':  'start-date', 'data-toggle':'datetimepicker' , 'data-target' :  '#start-date'  })    }}
-            {% for error in form.endDate.errors %}
+            {% for error in form.startDate.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </div>
+
         <div class="input-group mb-3 col-12  col-lg-6">
             <div class="input-group-prepend">
                 <span class="input-group-text">  {{ form.endDate.label.text }}<br></span>

@@ -142,3 +142,36 @@ class ConferenceUser(db.Model):
                        db.ForeignKey('users.id', ondelete='CASCADE'))
     conferenceId = db.Column(db.Integer(),
                           db.ForeignKey('conferences.id', ondelete='CASCADE'))
+
+
+class ParkingSpot(db.Model):
+    __tablename__ = 'parking_spots'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    city = db.Column(db.String(255), nullable=False)
+    address = db.Column(db.String(255), nullable=False)
+    available = db.Column(db.Boolean(), nullable=False, default=False)
+    idUser = db.Column(db.Integer(),
+                       db.ForeignKey('users.id', ondelete='CASCADE'))
+
+class TimeOff(db.Model):
+    __tablename__ = 'time_offs'
+    id = db.Column(db.Integer(), primary_key=True)
+    startDate = db.Column(db.Date(), nullable=False,
+                          default=datetime.today().strftime('%Y-%m-%d'))
+    endDate = db.Column(db.Date(), nullable=False,
+                        default=datetime.today().strftime('%Y-%m-%d'))
+    idParkingSpot = db.Column(db.Integer(),
+                              db.ForeignKey('parking_spots.id', ondelete='CASCADE'))
+
+class Booking(db.Model):
+    __tablename__ = 'bookings'
+    id = db.Column(db.Integer(), primary_key=True)
+    startDate = db.Column(db.Date(), nullable=False,
+                          default=datetime.today().strftime('%Y-%m-%d'))
+    endDate = db.Column(db.Date(), nullable=False,
+                        default=datetime.today().strftime('%Y-%m-%d'))
+    idUser = db.Column(db.Integer(),
+                       db.ForeignKey('users.id', ondelete='CASCADE'))
+    idParkingSpot = db.Column(db.Integer(),
+                              db.ForeignKey('parking_spots.id', ondelete='CASCADE'))

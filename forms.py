@@ -37,12 +37,6 @@ class ConferenceForm(FlaskForm):
     endDate = StringField('End Date', validators=[DataRequired()])
     submit = SubmitField('Create')
 
-class SearchForm(FlaskForm):
-    city = StringField('City', validators=[DataRequired()])
-    startDate = StringField('Start Date', validators=[DataRequired()])
-    endDate = StringField('End Date', validators=[DataRequired()])
-    submit = SubmitField('Search')
-
 class SectionForm(FlaskForm):
     name = StringField('Section Name', validators=[DataRequired()])
     startDate = StringField('Section Start Date', validators=[DataRequired()])
@@ -83,4 +77,16 @@ class SectionForm(FlaskForm):
     sessionChair = SelectField('Session Chair', choices=[(sessionChair.name, sessionChair.name)
                                                          for sessionChair in sessionChairs])
 
+    submit = SubmitField('Add')
+
+class SearchForm(FlaskForm):
+    city = StringField('City', validators=[DataRequired()])
+    startDate = StringField('Start Date', validators=[DataRequired()])
+    endDate = StringField('End Date', validators=[DataRequired()])
+    submit = SubmitField('Search')
+
+class AddParkingSpotForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
     submit = SubmitField('Add')

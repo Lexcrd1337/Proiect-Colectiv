@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        Manage Spots
+        <a style="color: #007bff;" href="{{ url_for('add_parking_spot') }}">
+            <i class="fas fa-plus"></i>
+        </a>
+    </h1>
+</div>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" style="background: #fff;">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>City</th>
+            <th>Address</th>
+            <th>Available</th>
+<!--            Maybe an edit here and a delete (a delete definetely)-->
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in value %}
+        <tr>
+            <td>{{ row.name }}</td>
+            <td>{{ row.city }}</td>
+            <td>{{ row.address }}</td>
+            {% if row.available is sameas true %}
+            <td>
+                <i style="color: #007bff;" class="fas fa-check"></i>
+            </td>
+            {% else %}
+            <td>
+                <i style="color: #e60000;" class="fas fa-times"></i>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
