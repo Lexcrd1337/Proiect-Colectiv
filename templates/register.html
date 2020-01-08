@@ -21,6 +21,13 @@
 
         </div>
         <div class="form-group">
+            {% for error in form.phoneNumber.errors %}
+            <span class="error">[{{ error }}]</span>
+            {% endfor %}
+            {{ form.phoneNumber(class_="form-control form-control-user",placeholder="Phone number") }}
+
+        </div>
+        <div class="form-group">
             {% for error in form.name.errors %}
                 <span class="error">[{{ error }}]</span>
             {% endfor %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        Available Parking Spots
+    </h1>
+</div>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" style="background: #fff;">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>City</th>
+            <th>Address</th>
+            <th>Available Interval</th>
+            <th>Contact</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for row in value %}
+        <tr>
+            <td>{{ row[0].name }}</td>
+            <td>{{ row[0].city }}</td>
+            <td>{{ row[0].address }}</td>
+            <td>{{ row[1].startDate }} - {{ row[1].endDate }}</td>
+            <td>
+                <a href="{{ url_for('user_details', parkingSpotId=row[0].id) }}">
+                    <i class="fas fa-info-circle"></i>
+                </a>
+            </td>
+            <td>
+                <a href="#">
+                    <i class="fas fa-handshake"></i>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

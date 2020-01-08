@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
 
     username = db.Column(db.String(255), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
+    phoneNumber = db.Column(db.String(255), nullable=False, server_default='')
     password = db.Column(db.String(255), nullable=False, server_default='')
 
     name = db.Column(db.String(100), nullable=False, server_default='')
@@ -25,11 +26,12 @@ class User(UserMixin, db.Model):
     conferences = db.relationship('Conference', secondary='conferences_users',
                                   backref=db.backref('users'))
 
-    def __init__(self, username, email, name):
+    def __init__(self, username, email, name, phoneNumber):
         self.username = username
         self.email = email
         self.name = name
         self.password = ''
+        self.phoneNumber = phoneNumber
 
     def __repr__(self):
         return '<User {}>'.format(self.username)

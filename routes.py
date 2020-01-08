@@ -5,8 +5,8 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 from models import Paper, Submission
-from forms import LoginForm, RegistrationForm, ConferenceForm, SectionForm, SearchForm, AddParkingSpotForm
-from models import User, Conference, Section, SectionUser, UserPaperQualifier, ConferenceUser, Paper, ParkingSpot
+from forms import LoginForm, RegistrationForm, ConferenceForm, SectionForm, SearchForm, AddParkingSpotForm, AddTimeOffForm
+from models import User, Conference, Section, SectionUser, UserPaperQualifier, ConferenceUser, Paper, ParkingSpot, TimeOff
 from extensions import db
 from utils import requires_roles
 from app import app
@@ -16,8 +16,7 @@ from app import app
 @app.route('/home')
 @login_required
 def home():
-    # todo maybe replace home.html with parking spot page
-    return render_template('home.html', title='Home Page')
+    return redirect(url_for('search'))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -56,8 +55,8 @@ def register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data,
-                    email=form.email.data, name=form.name.data)
+        user = User(username=form.username.data, email=form.email.data, name=form.name.data,
+                    phoneNumber=form.phoneNumber.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -255,10 +254,43 @@ def search():
         city = form.city.data
         startDate = form.startDate.data
         endDate = form.endDate.data
-        # todo implement parking_spots.html
-        return redirect(url_for('parking_spots.html', city=city, startDate=startDate, endDate=endDate))
+        return redirect(url_for('parking_spots', city=city, startDate=startDate, endDate=endDate))
 
     return render_template('search.html', title='Search', form=form)
+
+
+@app.route('/parking-spots/<city>/<startDate>/<endDate>', methods=['GET', 'POST'])
+@login_required
+def parking_spots(city, startDate, endDate):
+    # todo time offs query only work it the input start date and the end date are equal to the ones of the time off
+    timeOffs = TimeOff.query.filter(TimeOff.startDate >= startDate).filter(TimeOff.endDate <= endDate).all()
+    data = []
+
+    for timeOff in timeOffs:
+        parkingSpot = ParkingSpot.query.filter_by(id=timeOff.idParkingSpot).first()
+
+        if parkingSpot.city == city:
+            data.append((parkingSpot, timeOff))
+
+    return render_template('parking_spots.html', title='Parking spots', value=data)
+
+
+@app.route('/user-details/<parkingSpotId>', methods=['GET'])
+@login_required
+def user_details(parkingSpotId):
+    parkingSpot = ParkingSpot.query.filter_by(id=parkingSpotId).first()
+    user = User.query.filter_by(id=parkingSpot.idUser).first()
+    name = user.name
+    email = user.email
+    phoneNumber = user.phoneNumber
+
+    return render_template('user_details.html', title='User Details', name=name, email=email, phoneNumber=phoneNumber)
+
+@app.route('/book/<parkingSpotId>')
+@login_required
+def book(parkingSpotId):
+    # todo implement this; set the parking spot as unavailable and create a page called my bookings
+    pass
 
 
 @app.route('/manage-spots', methods=['GET', 'POST'])
@@ -287,3 +319,42 @@ def add_parking_spot():
         return redirect(url_for('manage_spots'))
 
     return render_template('add_parking_spot.html', title='Add Parking Spot', form=form)
+
+@app.route('/remove-parking-spot/<parkingSpotId>')
+@login_required
+def remove_parking_spot(parkingSpotId):
+    ParkingSpot.query.filter_by(id=parkingSpotId).delete()
+    db.session.commit()
+
+    return redirect(url_for('manage_spots'))
+
+@app.route('/make-parking-spot-unavailable/<parkingSpotId>')
+@login_required
+def make_parking_spot_unavailable(parkingSpotId):
+    parkingSpot = ParkingSpot.query.filter_by(id=parkingSpotId).first()
+    parkingSpot.available = False
+    db.session.commit()
+
+    return redirect(url_for('manage_spots'))
+
+@app.route('/make-parking-spot-available/<parkingSpotId>')
+@login_required
+def make_parking_spot_available(parkingSpotId):
+    return redirect(url_for('add_time_off', parkingSpotId=parkingSpotId))
+
+
+@app.route('/add-time-off/<parkingSpotId>', methods=['GET', 'POST'])
+@login_required
+def add_time_off(parkingSpotId):
+    form = AddTimeOffForm()
+
+    if form.validate_on_submit():
+        timeOff = TimeOff(startDate=form.startDate.data, endDate=form.endDate.data, idParkingSpot=parkingSpotId)
+        parkingSpot = ParkingSpot.query.filter_by(id=parkingSpotId).first()
+        parkingSpot.available = True
+        db.session.add(timeOff)
+        db.session.commit()
+
+        return redirect(url_for('manage_spots'))
+    # todo invalidate past time offs somewhere
+    return render_template('add_time_off.html', title='Add Time Off', form=form)

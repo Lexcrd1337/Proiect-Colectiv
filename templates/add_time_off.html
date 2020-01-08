@@ -3,7 +3,7 @@
 
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Search</h1>
+    <h1 class="h3 mb-0 text-gray-800">Add Time Off</h1>
 </div>
 
 
@@ -11,18 +11,6 @@
 <div class="row">
     <form action="" method="post" novalidate class="col-12">
         {{ form.hidden_tag() }}
-
-
-        <div class="input-group mb-3 col-12  col-lg-6">
-            <div class="input-group-prepend">
-                <span class="input-group-text">  {{ form.city.label.text }}<br></span>
-
-            </div>
-            {{ form.city(size=32,class="form-control",**{'placeholder':  form.city.label.text , 'aria-label' :  form.city.label.text  })    }}
-            {% for error in form.city.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
 
         <div class="input-group mb-3 col-12  col-lg-6">
             <div class="input-group-prepend">
@@ -55,7 +43,7 @@
 <script type="text/javascript">
     $(function () {
         $('#end-date,#start-date').datetimepicker({
-            format: 'MM-DD-YYYY'
+            format: 'MM/DD/YYYY'
         });
     });
 </script>

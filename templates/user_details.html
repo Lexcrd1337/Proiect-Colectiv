@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Contact Details</h1>
+</div>
+
+
+<!-- Content Row -->
+<div class="card" style="width: 15%; margin-bottom: 5%">
+    <h5 class="card-title text-uppercase mb-0" style="padding: 10px">
+        {{ name }}
+        <i class="fas fa-car"></i>
+    </h5>
+    <p class="h6 mb-0" style="padding: 10px">
+        {{ phoneNumber }}
+        <i class="fas fa-phone"></i>
+    </p>
+    <p class="h6 mb-0" style="padding: 10px">
+        {{ email }}
+        <i class="fas fa-envelope"></i>
+    </p>
+</div>
+{% endblock %}

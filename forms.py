@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, SelectMultipleField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Regexp
 from wtforms.fields.html5 import DateField
 from datetime import datetime
 from models import User, Conference, Paper, UserPaperQualifier
@@ -16,6 +16,7 @@ class LoginForm(FlaskForm):
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    phoneNumber = StringField('Phone Number', validators=[DataRequired(), Regexp('^(\+4|)?(07[0-8]{1}[0-9]{1}|02[0-9]{2}|03[0-9]{2}){1}?(\s|\.|\-)?([0-9]{3}(\s|\.|\-|)){2}$', message='Invalid phone number')])
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
     name = StringField('Name', validators=[DataRequired()])
@@ -89,4 +90,9 @@ class AddParkingSpotForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     city = StringField('City', validators=[DataRequired()])
     address = StringField('Address', validators=[DataRequired()])
+    submit = SubmitField('Add')
+
+class AddTimeOffForm(FlaskForm):
+    startDate = StringField('Start Date', validators=[DataRequired()])
+    endDate = StringField('End Date', validators=[DataRequired()])
     submit = SubmitField('Add')

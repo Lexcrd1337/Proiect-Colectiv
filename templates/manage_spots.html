@@ -16,7 +16,7 @@
             <th>City</th>
             <th>Address</th>
             <th>Available</th>
-<!--            Maybe an edit here and a delete (a delete definetely)-->
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -27,13 +27,22 @@
             <td>{{ row.address }}</td>
             {% if row.available is sameas true %}
             <td>
-                <i style="color: #007bff;" class="fas fa-check"></i>
+                <a href="{{ url_for('make_parking_spot_unavailable', parkingSpotId=row.id) }}">
+                    <i style="color: #007bff;" class="fas fa-check"></i>
+                </a>
             </td>
             {% else %}
             <td>
-                <i style="color: #e60000;" class="fas fa-times"></i>
+                <a href="{{ url_for('make_parking_spot_available', parkingSpotId=row.id) }}">
+                    <i style="color: #e60000;" class="fas fa-times"></i>
+                </a>
             </td>
             {% endif %}
+            <td>
+                <a style="color: #e60000 !important;" href="{{ url_for('remove_parking_spot', parkingSpotId=row.id) }}">
+                    <i class="fas fa-minus"></i>
+                </a>
+            </td>
         </tr>
         {% endfor %}
         </tbody>
