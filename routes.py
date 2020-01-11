@@ -319,10 +319,10 @@ def manage_spots():
     cursor = db.engine.raw_connection().cursor()
     cursor.execute('select * from parking_spots')
     userSpots = ParkingSpot.query.filter_by(idUser=current_user.id).all()
+    dates = TimeOff.query.filter_by(idParkingSpot=ParkingSpot.id).all()
     data = userSpots
-
-    return render_template('manage_spots.html', title='Manage spots', value=data)
-
+    data2 = dates
+    return render_template('manage_spots.html', title='Manage spots', value=data, value2=data2)
 
 @app.route('/add-parking-spot', methods=['GET', 'POST'])
 @login_required
@@ -372,9 +372,11 @@ def add_time_off(parkingSpotId):
         timeOff = TimeOff(startDate=form.startDate.data, endDate=form.endDate.data, idParkingSpot=parkingSpotId)
         parkingSpot = ParkingSpot.query.filter_by(id=parkingSpotId).first()
         parkingSpot.available = True
+        # for deleting old time off
+        TimeOff.query.filter_by(idParkingSpot=parkingSpotId).delete()
         db.session.add(timeOff)
         db.session.commit()
 
         return redirect(url_for('manage_spots'))
-    # todo invalidate past time offs somewhere
+
     return render_template('add_time_off.html', title='Add Time Off', form=form)

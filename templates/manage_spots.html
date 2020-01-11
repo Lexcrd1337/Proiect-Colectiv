@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
+<div class="d-sm-flex align-items-center justify-content-between mb-4" xmlns:display="http://www.w3.org/1999/xhtml"
+     xmlns:display="http://www.w3.org/1999/xhtml" xmlns:align="http://www.w3.org/1999/xhtml"
+     xmlns:align="http://www.w3.org/1999/xhtml">
     <h1 class="h3 mb-0 text-gray-800">
         Manage Spots
         <a style="color: #007bff;" href="{{ url_for('add_parking_spot') }}">
@@ -30,6 +32,11 @@
                 <a href="{{ url_for('make_parking_spot_unavailable', parkingSpotId=row.id) }}">
                     <i style="color: #007bff;" class="fas fa-check"></i>
                 </a>
+                {% for r in value2 %}
+                {% if r.idParkingSpot == row.id %}
+                <h>{{ r.startDate }} -- {{ r.endDate }}</h>
+                {% endif %}
+                {% endfor %}
             </td>
             {% else %}
             <td>
@@ -38,6 +45,7 @@
                 </a>
             </td>
             {% endif %}
+
             <td>
                 <a style="color: #e60000 !important;" href="{{ url_for('remove_parking_spot', parkingSpotId=row.id) }}">
                     <i class="fas fa-minus"></i>
