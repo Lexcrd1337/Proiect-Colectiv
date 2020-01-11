@@ -4,7 +4,7 @@ from flask import send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
-from models import Paper, Submission
+from models import Paper, Submission, Booking
 from forms import LoginForm, RegistrationForm, ConferenceForm, SectionForm, SearchForm, AddParkingSpotForm, AddTimeOffForm
 from models import User, Conference, Section, SectionUser, UserPaperQualifier, ConferenceUser, Paper, ParkingSpot, TimeOff
 from extensions import db
@@ -269,7 +269,7 @@ def parking_spots(city, startDate, endDate):
     for timeOff in timeOffs:
         parkingSpot = ParkingSpot.query.filter_by(id=timeOff.idParkingSpot).first()
 
-        if parkingSpot.city == city:
+        if parkingSpot.city == city and parkingSpot.available:
             data.append((parkingSpot, timeOff))
 
     return render_template('parking_spots.html', title='Parking spots', value=data)
@@ -286,11 +286,25 @@ def user_details(parkingSpotId):
 
     return render_template('user_details.html', title='User Details', name=name, email=email, phoneNumber=phoneNumber)
 
-@app.route('/book/<parkingSpotId>')
+@app.route('/book/<parkingSpotId>/<timeOffId>')
 @login_required
-def book(parkingSpotId):
-    # todo implement this; set the parking spot as unavailable and create a page called my bookings
-    pass
+def book(parkingSpotId, timeOffId):
+    timeOff = TimeOff.query.filter_by(id=timeOffId).first()
+    make_parking_spot_unavailable(parkingSpotId)
+    booking = Booking(startDate=timeOff.startDate, endDate=timeOff.endDate, idUser=current_user.id, idParkingSpot=parkingSpotId)
+
+    db.session.add(booking)
+    db.session.commit()
+
+    flash('You just booked a new parking spot!')
+    return redirect(url_for('my_bookings'))
+
+@app.route('/my-bookings')
+@login_required
+def my_bookings():
+    bookings = Booking.query.filter_by(idUser=current_user.id).all()
+
+    return render_template('bookings.html', title='My Bookings', value=bookings)
 
 
 @app.route('/manage-spots', methods=['GET', 'POST'])

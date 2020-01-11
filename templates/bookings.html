@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        My Bookings
+    </h1>
+</div>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover" style="background: #fff;">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Parking Spot</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for row in value %}
+        <tr>
+            <td>{{ row.id }}</td>
+            <td>{{ row.idParkingSpot }}</td>
+            <td>{{ row.startDate }}</td>
+            <td>{{ row.endDate }}</td>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+{% endblock %}
