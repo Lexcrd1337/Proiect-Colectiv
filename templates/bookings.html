@@ -9,21 +9,28 @@
     <table class="table table-bordered table-hover" style="background: #fff;">
         <thead>
         <tr>
-            <th></th>
-            <th>Parking Spot</th>
+            <th>Parking Spot Name</th>
+            <th>Parking Spot City</th>
+            <th>Parking Spot Address</th>
             <th>Start Date</th>
             <th>End Date</th>
-            <th></th>
+            <th>Contact</th>
         </tr>
         </thead>
         <tbody>
 
         {% for row in value %}
         <tr>
-            <td>{{ row.id }}</td>
-            <td>{{ row.idParkingSpot }}</td>
-            <td>{{ row.startDate }}</td>
-            <td>{{ row.endDate }}</td>
+            <td>{{ row[0].name }}</td>
+            <td>{{ row[0].city }}</td>
+            <td>{{ row[0].address }}</td>
+            <td>{{ row[1].startDate }}</td>
+            <td>{{ row[1].endDate }}</td>
+            <td>
+                <a href="{{ url_for('user_details', parkingSpotId=row[0].id) }}">
+                    <i class="fas fa-info-circle"></i>
+                </a>
+            </td>
         </tr>
         {% endfor %}
 

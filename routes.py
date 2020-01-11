@@ -262,8 +262,7 @@ def search():
 @app.route('/parking-spots/<city>/<startDate>/<endDate>', methods=['GET', 'POST'])
 @login_required
 def parking_spots(city, startDate, endDate):
-    # todo time offs query only work it the input start date and the end date are equal to the ones of the time off
-    timeOffs = TimeOff.query.filter(TimeOff.startDate >= startDate).filter(TimeOff.endDate <= endDate).all()
+    timeOffs = TimeOff.query.filter(TimeOff.startDate <= startDate).filter(TimeOff.endDate >= endDate).all()
     data = []
 
     for timeOff in timeOffs:
@@ -303,8 +302,13 @@ def book(parkingSpotId, timeOffId):
 @login_required
 def my_bookings():
     bookings = Booking.query.filter_by(idUser=current_user.id).all()
+    data = []
 
-    return render_template('bookings.html', title='My Bookings', value=bookings)
+    for booking in bookings:
+        parkingSpot = ParkingSpot.query.filter_by(id=booking.idParkingSpot).first()
+        data.append((parkingSpot, booking))
+
+    return render_template('bookings.html', title='My Bookings', value=data)
 
 
 @app.route('/manage-spots', methods=['GET', 'POST'])
