@@ -2,7 +2,7 @@
 {% block content %}
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">
-        Available Parking Spots
+        Available Parking Spots in {{ city }} between {{ startDate }} and {{ endDate }}
     </h1>
 </div>
 <div class="table-responsive">
@@ -12,9 +12,8 @@
             <th>Name</th>
             <th>City</th>
             <th>Address</th>
-            <th>Available Interval</th>
             <th>Contact</th>
-            <th></th>
+            <th>Book</th>
         </tr>
         </thead>
         <tbody>
@@ -23,14 +22,14 @@
             <td>{{ row[0].name }}</td>
             <td>{{ row[0].city }}</td>
             <td>{{ row[0].address }}</td>
-            <td>{{ row[1].startDate }} - {{ row[1].endDate }}</td>
             <td>
                 <a href="{{ url_for('user_details', parkingSpotId=row[0].id) }}">
                     <i class="fas fa-info-circle"></i>
                 </a>
             </td>
             <td>
-                <a href="{{ url_for('book', parkingSpotId=row[0].id, timeOffId=row[1].id) }}">
+                <a href="{{ url_for('book', parkingSpotId=row[0].id, timeOffId=row[1].id,
+                                    startDate=startDate, endDate=endDate) }}">
                     <i class="fas fa-handshake"></i>
                 </a>
             </td>

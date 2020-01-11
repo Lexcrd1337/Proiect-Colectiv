@@ -271,7 +271,8 @@ def parking_spots(city, startDate, endDate):
         if parkingSpot.city == city and parkingSpot.available:
             data.append((parkingSpot, timeOff))
 
-    return render_template('parking_spots.html', title='Parking spots', value=data)
+    return render_template('parking_spots.html', title='Parking spots', value=data,
+                           city=city, startDate=startDate, endDate=endDate)
 
 
 @app.route('/user-details/<parkingSpotId>', methods=['GET'])
@@ -285,9 +286,10 @@ def user_details(parkingSpotId):
 
     return render_template('user_details.html', title='User Details', name=name, email=email, phoneNumber=phoneNumber)
 
-@app.route('/book/<parkingSpotId>/<timeOffId>')
+@app.route('/book/<parkingSpotId>/<timeOffId>/<startDate>/<endDate>')
 @login_required
-def book(parkingSpotId, timeOffId):
+def book(parkingSpotId, timeOffId, startDate, endDate):
+    # todo take into account the startDate and endDate and create additional time offs based on the time off interval
     timeOff = TimeOff.query.filter_by(id=timeOffId).first()
     make_parking_spot_unavailable(parkingSpotId)
     booking = Booking(startDate=timeOff.startDate, endDate=timeOff.endDate, idUser=current_user.id, idParkingSpot=parkingSpotId)
