@@ -30,7 +30,7 @@
                 </a>
             </td>
             <td>
-                <a href="#">
+                <a href="{{ url_for('book', parkingSpotId=row[0].id, timeOffId=row[1].id) }}">
                     <i class="fas fa-handshake"></i>
                 </a>
             </td>
