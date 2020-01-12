@@ -177,3 +177,10 @@ class Booking(db.Model):
                        db.ForeignKey('users.id', ondelete='CASCADE'))
     idParkingSpot = db.Column(db.Integer(),
                               db.ForeignKey('parking_spots.id', ondelete='CASCADE'))
+
+
+class Notification(db.Model):
+    __tablename__ = 'notifications'
+    id = db.Column(db.Integer(), primary_key=True)
+    idUser = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
+    message = db.Column(db.String(255), nullable=False)
