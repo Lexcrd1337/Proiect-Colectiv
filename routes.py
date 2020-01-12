@@ -374,6 +374,7 @@ def add_time_off(parkingSpotId):
         parkingSpot.available = True
         # for deleting old time off
         TimeOff.query.filter_by(idParkingSpot=parkingSpotId).delete()
+        Booking.query.filter_by(idParkingSpot=parkingSpotId).delete()
         db.session.add(timeOff)
         db.session.commit()
 
