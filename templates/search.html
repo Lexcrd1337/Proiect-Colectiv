@@ -16,9 +16,15 @@
         <div class="input-group mb-3 col-12  col-lg-6">
             <div class="input-group-prepend">
                 <span class="input-group-text">  {{ form.city.label.text }}<br></span>
-
             </div>
-            {{ form.city(size=32,class="form-control",**{'placeholder':  form.city.label.text , 'aria-label' :  form.city.label.text  })    }}
+
+            {{ form.city(list="states-list",class="form-control",**{'placeholder':  form.city.label.text , 'aria-label' :  form.city.label.text  })    }}
+            <datalist id="states-list">
+                {% for city in cities %}
+                <option>{{ city }}</option>
+                {% endfor %}
+            </datalist>
+
             {% for error in form.city.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
