@@ -30,4 +30,6 @@ To upgrade the DB run `pipenv run python3 manage.py db upgrade`.
     - APP_SETTINGS="config.DevelopmentConfig"
     - SECRET_KEY="this is a very long secret key"
     - UPLOAD_PROPOSALS_FOLDER="folder path"
+    - EMAIL_USER=clujparkings@gmail.com
+    - EMAIL_PASSWORD=secretpassword1!
 ```
