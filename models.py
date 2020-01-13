@@ -184,3 +184,5 @@ class Notification(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     idUser = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
     message = db.Column(db.String(255), nullable=False)
+    msgType = db.Column(db.INTEGER(), nullable=False)
+    msgDate = db.Column(db.DATE(), nullable=False)

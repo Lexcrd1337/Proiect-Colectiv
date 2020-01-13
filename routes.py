@@ -1,4 +1,6 @@
 import os
+from datetime import date
+
 from flask import render_template, flash, redirect, url_for, request
 from flask import send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
@@ -307,7 +309,13 @@ def book(parkingSpotId, timeOffId, startDate, endDate):
     make_parking_spot_unavailable(parkingSpotId)
     booking = Booking(startDate=timeOff.startDate, endDate=timeOff.endDate, idUser=current_user.id,
                       idParkingSpot=parkingSpotId)
+    newMsg = Notification(idUser=current_user.id,
+                          message="You booked a parking spot between: " + str(timeOff.startDate) + " - " + str(
+                              timeOff.endDate),
+                          msgType=2,
+                          msgDate=date.today())
 
+    db.session.add(newMsg)
     db.session.add(booking)
     db.session.commit()
 
@@ -373,13 +381,22 @@ def remove_parking_spot(parkingSpotId):
         newMsg = Notification(idUser=entry.idUser,
                               message="Your booking for the dates: " + str(entry.startDate) + " - " + str(entry.endDate) +
                                       " has been canceled because the parking " +
-                                      "spot is no longer available.")
+                                      "spot was removed by the owner.",
+                              msgType=1,
+                              msgDate=date.today())
         db.session.add(newMsg)
     ParkingSpot.query.filter_by(id=parkingSpotId).delete()
 
     db.session.commit()
 
     return redirect(url_for('manage_spots'))
+
+@app.route('/remove-msg/<msgId>')
+@login_required
+def remove_msg(msgId):
+    Notification.query.filter_by(id=msgId).delete()
+    db.session.commit()
+    return redirect(url_for('inbox'))
 
 
 @app.route('/make-parking-spot-unavailable/<parkingSpotId>')

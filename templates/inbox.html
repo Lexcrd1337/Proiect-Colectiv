@@ -6,16 +6,25 @@
         My messages
     </h1>
 </div>
+<ul>
     {% for row in value %}
 
-   <a href="#" class="list-group-item list-group-item-action">
+   <li href="#" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
+                {% if row.msgType == 1 %}
                 <h4>Booking canceled</h4>
-                <small></small>
+                {% elif row.msgType == 2 %}
+                <h4>New Booking!</h4>
+                {% endif %}
+                <small>{{row.msgDate}}</small>
             </div>
             <p>{{row.message}}</p>
-        </a>
+       <a style="color: #e60000 !important;" href="{{ url_for('remove_msg', msgId=row.id) }}">
+                    <i class="fas fa-minus"></i>
+                </a>
+        </li>
 
+    </ul>
     {% endfor %}
 
 </div>
