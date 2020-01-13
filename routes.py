@@ -10,6 +10,7 @@ from models import User, Conference, Section, SectionUser, UserPaperQualifier, C
 from extensions import db
 from utils import requires_roles
 from app import app
+from flask_mail import Mail, Message
 
 
 @app.route('/')
@@ -60,7 +61,14 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-
+        msg = Message(
+            subject="Account Creation",
+            sender=app.config.get("MAIL_USERNAME"),
+            recipients=[form.email.data],
+            body="Your account have been created! :)"
+        )
+        mail = Mail(app)
+        mail.send(msg)
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
 
