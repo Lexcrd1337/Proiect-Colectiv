@@ -5,8 +5,10 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from werkzeug.utils import secure_filename
 from models import Paper, Submission, Booking
-from forms import LoginForm, RegistrationForm, ConferenceForm, SectionForm, SearchForm, AddParkingSpotForm, AddTimeOffForm
-from models import User, Conference, Section, SectionUser, UserPaperQualifier, ConferenceUser, Paper, ParkingSpot, TimeOff
+from forms import LoginForm, RegistrationForm, ConferenceForm, SectionForm, SearchForm, AddParkingSpotForm, \
+    AddTimeOffForm
+from models import User, Conference, Section, SectionUser, UserPaperQualifier, ConferenceUser, Paper, ParkingSpot, \
+    TimeOff, Notification
 from extensions import db
 from utils import requires_roles
 from app import app
@@ -91,7 +93,7 @@ def submit_proposal():
         abstract.save(os.path.join(
             app.config['UPLOAD_PROPOSALS_FOLDER'], abstract_name))
         full_paper.save(os.path.join(
-          app.config['UPLOAD_PROPOSALS_FOLDER'], full_paper_name))
+            app.config['UPLOAD_PROPOSALS_FOLDER'], full_paper_name))
         paper.abstract_name = abstract_name
         paper.full_paper_name = full_paper_name
         db.session.commit()
@@ -123,6 +125,7 @@ def conference():
         return redirect(url_for('home'))
 
     return render_template('conference.html', title='Create Conference', form=form)
+
 
 @app.route('/section', methods=['GET', 'POST'])
 @login_required
@@ -253,6 +256,7 @@ def sectionsForConference(conferenceId):
 
     return render_template('sections_for_conference.html', value=data, conference=conferenceName)
 
+
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
@@ -294,19 +298,22 @@ def user_details(parkingSpotId):
 
     return render_template('user_details.html', title='User Details', name=name, email=email, phoneNumber=phoneNumber)
 
+
 @app.route('/book/<parkingSpotId>/<timeOffId>/<startDate>/<endDate>')
 @login_required
 def book(parkingSpotId, timeOffId, startDate, endDate):
     # todo take into account the startDate and endDate and create additional time offs based on the time off interval
     timeOff = TimeOff.query.filter_by(id=timeOffId).first()
     make_parking_spot_unavailable(parkingSpotId)
-    booking = Booking(startDate=timeOff.startDate, endDate=timeOff.endDate, idUser=current_user.id, idParkingSpot=parkingSpotId)
+    booking = Booking(startDate=timeOff.startDate, endDate=timeOff.endDate, idUser=current_user.id,
+                      idParkingSpot=parkingSpotId)
 
     db.session.add(booking)
     db.session.commit()
 
     flash('You just booked a new parking spot!')
     return redirect(url_for('my_bookings'))
+
 
 @app.route('/my-bookings')
 @login_required
@@ -321,6 +328,14 @@ def my_bookings():
     return render_template('bookings.html', title='My Bookings', value=data)
 
 
+@app.route('/inbox')
+@login_required
+def inbox():
+    messages = Notification.query.filter_by(idUser=current_user.id).all()
+    data = messages
+    return render_template('inbox.html', value=data)
+
+
 @app.route('/manage-spots', methods=['GET', 'POST'])
 @login_required
 def manage_spots():
@@ -331,6 +346,7 @@ def manage_spots():
     data = userSpots
     data2 = dates
     return render_template('manage_spots.html', title='Manage spots', value=data, value2=data2)
+
 
 @app.route('/add-parking-spot', methods=['GET', 'POST'])
 @login_required
@@ -348,22 +364,34 @@ def add_parking_spot():
 
     return render_template('add_parking_spot.html', title='Add Parking Spot', form=form)
 
+
 @app.route('/remove-parking-spot/<parkingSpotId>')
 @login_required
 def remove_parking_spot(parkingSpotId):
+    affected = Booking.query.filter_by(idParkingSpot=parkingSpotId).all()
+    for entry in affected:
+        newMsg = Notification(idUser=entry.idUser,
+                              message="Your booking for the dates: " + str(entry.startDate) + " - " + str(entry.endDate) +
+                                      " has been canceled because the parking " +
+                                      "spot is no longer available.")
+        db.session.add(newMsg)
     ParkingSpot.query.filter_by(id=parkingSpotId).delete()
+
     db.session.commit()
 
     return redirect(url_for('manage_spots'))
+
 
 @app.route('/make-parking-spot-unavailable/<parkingSpotId>')
 @login_required
 def make_parking_spot_unavailable(parkingSpotId):
     parkingSpot = ParkingSpot.query.filter_by(id=parkingSpotId).first()
+
     parkingSpot.available = False
     db.session.commit()
 
     return redirect(url_for('manage_spots'))
+
 
 @app.route('/make-parking-spot-available/<parkingSpotId>')
 @login_required
@@ -382,6 +410,14 @@ def add_time_off(parkingSpotId):
         parkingSpot.available = True
         # for deleting old time off
         TimeOff.query.filter_by(idParkingSpot=parkingSpotId).delete()
+        affected = Booking.query.filter_by(idParkingSpot=parkingSpotId).all()
+        for entry in affected:
+            newMsg = Notification(idUser=entry.idUser,
+                                  message="Your booking for the dates: " + str(entry.startDate) + " - " + str(
+                                      entry.endDate) +
+                                          " has been canceled because the parking " +
+                                          "spot is no longer available.")
+            db.session.add(newMsg)
         Booking.query.filter_by(idParkingSpot=parkingSpotId).delete()
         db.session.add(timeOff)
         db.session.commit()
