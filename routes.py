@@ -309,9 +309,34 @@ def book(parkingSpotId, timeOffId, startDate, endDate):
     make_parking_spot_unavailable(parkingSpotId)
     booking = Booking(startDate=timeOff.startDate, endDate=timeOff.endDate, idUser=current_user.id,
                       idParkingSpot=parkingSpotId)
+
+    spotDetails = ParkingSpot.query.filter_by(id=parkingSpotId).first()
+    city = spotDetails.city.split()
+    address = spotDetails.address.split()
+    cityInLink = ""
+    adressInLink = ""
+    for word in city:
+        cityInLink = cityInLink + "+" + str(word)
+    for word in address:
+        adressInLink = adressInLink + str(word) + "+"
+    adressInLink = adressInLink[:-1] + ','
+    adressInLink = adressInLink + cityInLink
+    print(adressInLink)
+
+    msg = Message(
+        subject="New Booking",
+        sender=app.config.get("MAIL_USERNAME"),
+        recipients=[current_user.email],
+        body="You booked a parking spot in" + str(spotDetails.city) + " at address: " + str(spotDetails.address) +
+                 ". See the location in google maps here: https://www.google.com/maps/place/" + str(adressInLink) + "/"
+
+    )
+    mail = Mail(app)
+    mail.send(msg)
+
     newMsg = Notification(idUser=current_user.id,
                           message="You booked a parking spot between: " + str(timeOff.startDate) + " - " + str(
-                              timeOff.endDate),
+                              timeOff.endDate)+". An email with details was sent to you.",
                           msgType=2,
                           msgDate=date.today())
 
@@ -433,7 +458,10 @@ def add_time_off(parkingSpotId):
                                   message="Your booking for the dates: " + str(entry.startDate) + " - " + str(
                                       entry.endDate) +
                                           " has been canceled because the parking " +
-                                          "spot is no longer available.")
+                                          "spot was updated. Please check the new dates and book again if it's still fine for you.",
+                                  msgType=3,
+                                  msgDate=date.today()
+                                  )
             db.session.add(newMsg)
         Booking.query.filter_by(idParkingSpot=parkingSpotId).delete()
         db.session.add(timeOff)

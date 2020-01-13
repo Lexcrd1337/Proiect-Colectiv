@@ -15,6 +15,8 @@
                 <h4>Booking canceled</h4>
                 {% elif row.msgType == 2 %}
                 <h4>New Booking!</h4>
+                {% elif row.msgType == 3 %}
+                <h4>Your booked parking spot was updated</h4>
                 {% endif %}
                 <small>{{row.msgDate}}</small>
             </div>
