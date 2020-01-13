@@ -11,7 +11,7 @@ from forms import LoginForm, RegistrationForm, ConferenceForm, SectionForm, Sear
     AddTimeOffForm
 from models import User, Conference, Section, SectionUser, UserPaperQualifier, ConferenceUser, Paper, ParkingSpot, \
     TimeOff, Notification
-from extensions import db
+from extensions import db, cities
 from utils import requires_roles
 from app import app
 from flask_mail import Mail, Message
@@ -270,7 +270,7 @@ def search():
         endDate = form.endDate.data
         return redirect(url_for('parking_spots', city=city, startDate=startDate, endDate=endDate))
 
-    return render_template('search.html', title='Search', form=form)
+    return render_template('search.html', title='Search', form=form, cities=cities)
 
 
 @app.route('/parking-spots/<city>/<startDate>/<endDate>', methods=['GET', 'POST'])
@@ -370,7 +370,7 @@ def add_parking_spot():
         flash('The new Parking Spot has been added')
         return redirect(url_for('manage_spots'))
 
-    return render_template('add_parking_spot.html', title='Add Parking Spot', form=form)
+    return render_template('add_parking_spot.html', title='Add Parking Spot', form=form, cities=cities)
 
 
 @app.route('/remove-parking-spot/<parkingSpotId>')
