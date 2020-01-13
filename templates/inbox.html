@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+        My messages
+    </h1>
+</div>
+    {% for row in value %}
+
+   <a href="#" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h4>Booking canceled</h4>
+                <small></small>
+            </div>
+            <p>{{row.message}}</p>
+        </a>
+
+    {% endfor %}
+
+</div>
+{% endblock %}
