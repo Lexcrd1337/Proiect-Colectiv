@@ -306,34 +306,26 @@ def user_details(parkingSpotId):
 @app.route('/book/<parkingSpotId>/<timeOffId>/<startDate>/<endDate>')
 @login_required
 def book(parkingSpotId, timeOffId, startDate, endDate):
-    # todo take into account the startDate and endDate and create additional time offs based on the time off interval
     timeOff = TimeOff.query.filter_by(id=timeOffId).first()
-    startdate = date_object = datetime.strptime(startDate, '%m-%d-%Y').date()
-    enddate = datetime.strptime(endDate, '%m-%d-%Y').date()
-    booking = Booking(startDate=startdate, endDate=enddate, idUser=current_user.id,idParkingSpot=parkingSpotId)
-    db.session.add(booking)
-    db.session.commit()
-    if (startdate > timeOff.startDate and enddate < timeOff.endDate):
-        # create two parking spots one from
-        timeOff1 = TimeOff(startDate = timeOff.startDate, endDate = startdate, idParkingSpot = parkingSpotId)
-        timeOff2 = TimeOff(startDate = enddate, endDate = timeOff.endDate, idParkingSpot = parkingSpotId)
+    startDate = datetime.strptime(startDate, '%m-%d-%Y').date()
+    endDate = datetime.strptime(endDate, '%m-%d-%Y').date()
+    booking = Booking(startDate=startDate, endDate=endDate, idUser=current_user.id, idParkingSpot=parkingSpotId)
+
+    if startDate > timeOff.startDate and endDate < timeOff.endDate:
+        timeOff1 = TimeOff(startDate=timeOff.startDate, endDate=startDate, idParkingSpot=parkingSpotId)
+        timeOff2 = TimeOff(startDate=endDate, endDate=timeOff.endDate, idParkingSpot=parkingSpotId)
         db.session.add(timeOff1)
         db.session.add(timeOff2)
         db.session.commit()
-    elif (startdate > timeOff.startDate and enddate == timeOff.endDate):
-        # create parking spot from startDate to timeOff.startDate
-        timeOff3 = TimeOff(startDate = timeOff.startDate, endDate = startdate, idParkingSpot = parkingSpotId)
+    elif startDate > timeOff.startDate and endDate == timeOff.endDate:
+        timeOff3 = TimeOff(startDate=timeOff.startDate, endDate=startDate, idParkingSpot=parkingSpotId)
         db.session.add(timeOff3)
         db.session.commit()
-    elif (startdate == timeOff.startDate and enddate < timeOff.endDate):
-        # create parking spot from endate to timeOff.endDate
-        booking1 = Booking(startDate=timeOff.startDate, endDate=startdate, idUser=current_user.id,
-                           idParkingSpot=parkingSpotId)
-        timeOff4 = TimeOff(startDate = timeOff.startDate, endDate = startdate, idParkingSpot = parkingSpotId)
+    elif startDate == timeOff.startDate and endDate < timeOff.endDate:
+        timeOff4 = TimeOff(startDate=endDate, endDate=timeOff.endDate, idParkingSpot=parkingSpotId)
         db.session.add(timeOff4)
         db.session.commit()
     else:
-        # make the parkingspot unavailable
         make_parking_spot_unavailable(parkingSpotId)
 
     spotDetails = ParkingSpot.query.filter_by(id=parkingSpotId).first()
@@ -354,7 +346,7 @@ def book(parkingSpotId, timeOffId, startDate, endDate):
         sender=app.config.get("MAIL_USERNAME"),
         recipients=[current_user.email],
         body="You booked a parking spot in" + str(spotDetails.city) + " at address: " + str(spotDetails.address) +
-                 ". See the location in google maps here: https://www.google.com/maps/place/" + str(adressInLink) + "/"
+             ". See the location in google maps here: https://www.google.com/maps/place/" + str(adressInLink) + "/"
 
     )
     mail = Mail(app)
@@ -362,12 +354,13 @@ def book(parkingSpotId, timeOffId, startDate, endDate):
 
     newMsg = Notification(idUser=current_user.id,
                           message="You booked a parking spot between: " + str(timeOff.startDate) + " - " + str(
-                              timeOff.endDate)+". An email with details was sent to you.",
+                              timeOff.endDate) + ". An email with details was sent to you.",
                           msgType=2,
                           msgDate=date.today())
 
     db.session.add(newMsg)
     db.session.add(booking)
+    db.session.delete(timeOff)
     db.session.commit()
 
     flash('You just booked a new parking spot!')
@@ -430,7 +423,8 @@ def remove_parking_spot(parkingSpotId):
     affected = Booking.query.filter_by(idParkingSpot=parkingSpotId).all()
     for entry in affected:
         newMsg = Notification(idUser=entry.idUser,
-                              message="Your booking for the dates: " + str(entry.startDate) + " - " + str(entry.endDate) +
+                              message="Your booking for the dates: " + str(entry.startDate) + " - " + str(
+                                  entry.endDate) +
                                       " has been canceled because the parking " +
                                       "spot was removed by the owner.",
                               msgType=1,
@@ -454,6 +448,10 @@ def remove_msg(msgId):
 @login_required
 def make_parking_spot_unavailable(parkingSpotId):
     parkingSpot = ParkingSpot.query.filter_by(id=parkingSpotId).first()
+    timeOffs = TimeOff.query.filter_by(idParkingSpot=parkingSpotId)
+
+    for timeOff in timeOffs:
+        db.session.delete(timeOff)
 
     parkingSpot.available = False
     db.session.commit()

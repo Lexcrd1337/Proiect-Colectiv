@@ -60,8 +60,9 @@
 </div>
 <script type="text/javascript">
     $(function () {
-        $('#end-date,#start-date').datetimepicker({
-            format: 'MM-DD-YYYY'
+        $('#end-date, #start-date').datetimepicker({
+            format: 'MM-DD-YYYY',
+            minDate: new Date()
         });
     });
 </script>
