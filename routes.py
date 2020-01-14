@@ -1,6 +1,8 @@
 import os
 from datetime import date
 
+from datetime import datetime
+
 from flask import render_template, flash, redirect, url_for, request
 from flask import send_from_directory
 from flask_login import current_user, login_user, logout_user, login_required
@@ -14,7 +16,7 @@ from models import User, Conference, Section, SectionUser, UserPaperQualifier, C
 from extensions import db, cities
 from utils import requires_roles
 from app import app
-from flask_mail import Mail, Message
+from flask_mail import *
 
 
 @app.route('/')
@@ -306,9 +308,33 @@ def user_details(parkingSpotId):
 def book(parkingSpotId, timeOffId, startDate, endDate):
     # todo take into account the startDate and endDate and create additional time offs based on the time off interval
     timeOff = TimeOff.query.filter_by(id=timeOffId).first()
-    make_parking_spot_unavailable(parkingSpotId)
-    booking = Booking(startDate=timeOff.startDate, endDate=timeOff.endDate, idUser=current_user.id,
-                      idParkingSpot=parkingSpotId)
+    startdate = date_object = datetime.strptime(startDate, '%m-%d-%Y').date()
+    enddate = datetime.strptime(endDate, '%m-%d-%Y').date()
+    booking = Booking(startDate=startdate, endDate=enddate, idUser=current_user.id,idParkingSpot=parkingSpotId)
+    db.session.add(booking)
+    db.session.commit()
+    if (startdate > timeOff.startDate and enddate < timeOff.endDate):
+        # create two parking spots one from
+        timeOff1 = TimeOff(startDate = timeOff.startDate, endDate = startdate, idParkingSpot = parkingSpotId)
+        timeOff2 = TimeOff(startDate = enddate, endDate = timeOff.endDate, idParkingSpot = parkingSpotId)
+        db.session.add(timeOff1)
+        db.session.add(timeOff2)
+        db.session.commit()
+    elif (startdate > timeOff.startDate and enddate == timeOff.endDate):
+        # create parking spot from startDate to timeOff.startDate
+        timeOff3 = TimeOff(startDate = timeOff.startDate, endDate = startdate, idParkingSpot = parkingSpotId)
+        db.session.add(timeOff3)
+        db.session.commit()
+    elif (startdate == timeOff.startDate and enddate < timeOff.endDate):
+        # create parking spot from endate to timeOff.endDate
+        booking1 = Booking(startDate=timeOff.startDate, endDate=startdate, idUser=current_user.id,
+                           idParkingSpot=parkingSpotId)
+        timeOff4 = TimeOff(startDate = timeOff.startDate, endDate = startdate, idParkingSpot = parkingSpotId)
+        db.session.add(timeOff4)
+        db.session.commit()
+    else:
+        # make the parkingspot unavailable
+        make_parking_spot_unavailable(parkingSpotId)
 
     spotDetails = ParkingSpot.query.filter_by(id=parkingSpotId).first()
     city = spotDetails.city.split()
