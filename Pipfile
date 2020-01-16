@@ -17,6 +17,7 @@ psycopg2-binary = "*"
 flask-wtf = "*"
 wtforms = "*"
 flask-login = "*"
+flask-mail = "*"
 
 [requires]
 python_version = "3.7"
