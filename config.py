@@ -13,7 +13,6 @@ class Config(object):
     SECRET_KEY = os.environ['SECRET_KEY']
     CSRF_ENABLED = True
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
-    UPLOAD_PROPOSALS_FOLDER = os.environ['UPLOAD_PROPOSALS_FOLDER']
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
