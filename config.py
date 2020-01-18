@@ -1,5 +1,5 @@
 import os
-
+import app
 
 class Config(object):
     DEBUG = False
@@ -12,7 +12,7 @@ class Config(object):
     MAIL_SERVER = 'smtp.gmail.com'
     SECRET_KEY = os.environ['SECRET_KEY']
     CSRF_ENABLED = True
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://giaaqdpgntyuod:a16a0b06413976fa27efd603a0852578650aeb052969da69e4f348ad14956291@ec2-3-220-86-239.compute-1.amazonaws.com:5432/dbvci5jlai3sr1'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
